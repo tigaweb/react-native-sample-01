@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "lesson01",
+    "slug": "lesson01",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/coffee-icon.png",
+    "splash": {
+      "image": "./assets/images/coffee-icon.png",
+      "resizeMode": "cover",
+      "imageWidth": "100%",
+      "backgroundColor": "#000000"
+    },
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.lesson01"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "ios": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#000000",
+            "imageWidth": 200
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
