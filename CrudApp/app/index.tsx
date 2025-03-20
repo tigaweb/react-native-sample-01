@@ -9,6 +9,7 @@ import { data, Todo } from "@/data/todos"
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter"
 import Animated, { LinearTransition } from "react-native-reanimated"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { StatusBar } from "expo-status-bar";
 
 import Octicons from "@expo/vector-icons/Octicons"
 // import { Colors } from "react-native/Libraries/NewAppScreen";
@@ -123,6 +124,7 @@ export default function Index() {
         itemLayoutAnimation={LinearTransition}
         keyboardDismissMode={"on-drag"}
       />
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'}/>
     </SafeAreaView>
   );
 }
