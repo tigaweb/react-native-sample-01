@@ -1,20 +1,22 @@
 import { Text, View, TextInput, Pressable, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ThemeContext, ThemeContextType } from "@/context/ThemeContext";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { data, Todo } from "@/data/todos"
 
 import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter"
-import Animated, {LinearTransition} from "react-native-reanimated"
+import Animated, { LinearTransition } from "react-native-reanimated"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import Octicons from "@expo/vector-icons/Octicons"
 // import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Colors } from "@/constants/Colors";
 
 export default function Index() {
-  const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id));
+  // const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id));
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   const [text, setText] = useState("");
   const { colorScheme, setColorScheme, theme } = useContext(ThemeContext)
@@ -22,6 +24,36 @@ export default function Index() {
   const [loaded, error] = useFonts({
     Inter_500Medium,
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("TodoApp")
+        const storageTodos: Todo[] = jsonValue != null ? JSON.parse(jsonValue) : []
+
+        if (storageTodos && storageTodos.length) {
+          setTodos(storageTodos.sort((a: Todo, b: Todo) => b.id - a.id))
+        } else {
+          setTodos(data.sort((a: Todo, b: Todo) => b.id - a.id))
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    fetchData()
+  }, [data])
+
+  useEffect(()=>{
+    const storeData = async () => {
+      try {
+       const jsonValue = JSON.stringify(todos) 
+       await AsyncStorage.setItem("TodoApp", jsonValue)
+      } catch (e) {
+       console.error(e) 
+      }
+    }
+    storeData()
+  },[todos])
 
   if (!loaded && !error) {
     return null
@@ -131,7 +163,7 @@ function createStyles(theme: ThemeContextType['theme'], colorScheme: ThemeContex
     },
     addButtonText: {
       fontSize: 18,
-      color: colorScheme === 'dark' ? 'black': 'white',
+      color: colorScheme === 'dark' ? 'black' : 'white',
     },
     todoItem: {
       flexDirection: 'row',
