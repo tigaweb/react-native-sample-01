@@ -10,6 +10,7 @@ import { Inter_500Medium, useFonts } from "@expo-google-fonts/inter"
 import Animated, { LinearTransition } from "react-native-reanimated"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { StatusBar } from "expo-status-bar";
+import { useRouter } from "expo-router";
 
 import Octicons from "@expo/vector-icons/Octicons"
 // import { Colors } from "react-native/Libraries/NewAppScreen";
@@ -21,6 +22,7 @@ export default function Index() {
 
   const [text, setText] = useState("");
   const { colorScheme, setColorScheme, theme } = useContext(ThemeContext)
+  const router = useRouter()
 
   const [loaded, error] = useFonts({
     Inter_500Medium,
@@ -44,17 +46,17 @@ export default function Index() {
     fetchData()
   }, [data])
 
-  useEffect(()=>{
+  useEffect(() => {
     const storeData = async () => {
       try {
-       const jsonValue = JSON.stringify(todos) 
-       await AsyncStorage.setItem("TodoApp", jsonValue)
+        const jsonValue = JSON.stringify(todos)
+        await AsyncStorage.setItem("TodoApp", jsonValue)
       } catch (e) {
-       console.error(e) 
+        console.error(e)
       }
     }
     storeData()
-  },[todos])
+  }, [todos])
 
   if (!loaded && !error) {
     return null
@@ -75,15 +77,23 @@ export default function Index() {
   }
 
   const removeTodo = (id: number) => { setTodos(todos.filter(todo => todo.id !== id)) }
+  const handlePress = (id: number) => {
+    router.push(`/todos/${id}`)
+  }
 
   const renderItem = ({ item }: { item: Todo }) => (
     <View style={styles.todoItem}>
-      <Text
-        style={[styles.todoText, item.completed && styles.completedText]}
-        onPress={() => toggleTodo(item.id)}
+      <Pressable
+        onPress={()=>handlePress(item.id)}
+        onLongPress={() => toggleTodo(item.id)}
       >
-        {item.title}
-      </Text>
+        <Text
+          style={[styles.todoText, item.completed && styles.completedText]}
+        >
+          {item.title}
+        </Text>
+      </Pressable>
+
       <Pressable onPress={() => removeTodo(item.id)}>
         <MaterialCommunityIcons name="delete-circle" size={36} color="red" selectable={undefined} />
       </Pressable>
@@ -124,7 +134,7 @@ export default function Index() {
         itemLayoutAnimation={LinearTransition}
         keyboardDismissMode={"on-drag"}
       />
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'}/>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </SafeAreaView>
   );
 }
