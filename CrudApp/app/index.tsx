@@ -84,7 +84,7 @@ export default function Index() {
   const renderItem = ({ item }: { item: Todo }) => (
     <View style={styles.todoItem}>
       <Pressable
-        onPress={()=>handlePress(item.id)}
+        onPress={() => handlePress(item.id)}
         onLongPress={() => toggleTodo(item.id)}
       >
         <Text
